@@ -1,0 +1,65 @@
+import math
+from datetime import datetime
+
+history = []
+
+def log(result):
+    history.append(result)
+
+def save_history():
+    with open("calc_history.txt", "a") as f:
+        f.write(f"\n--- {datetime.now()} ---\n")
+        for item in history:
+            f.write(item + "\n")
+    print("History saved to calc_history.txt")
+
+def main():
+    while True:
+        print("\n--- Calculator ---")
+        print("1. Add | 2. Subtract | 3. Multiply | 4. Divide")
+        print("5. Power | 6. Square Root | 7. Modulus")
+        print("8. Show History | 9. Save History | 10. Exit")
+
+        choice = input("Choose operation: ")
+
+        try:
+            if choice in ["1", "2", "3", "4", "5", "7"]:
+                a = float(input("Enter first number: "))
+                b = float(input("Enter second number: "))
+
+            if choice == "1":
+                result = f"{a} + {b} = {a+b}"
+            elif choice == "2":
+                result = f"{a} - {b} = {a-b}"
+            elif choice == "3":
+                result = f"{a} * {b} = {a*b}"
+            elif choice == "4":
+                result = f"{a} / {b} = {a/b if b!=0 else 'Error: division by zero'}"
+            elif choice == "5":
+                result = f"{a} ^ {b} = {a**b}"
+            elif choice == "6":
+                num = float(input("Enter number: "))
+                result = f"√{num} = {math.sqrt(num)}"
+            elif choice == "7":
+                result = f"{a} % {b} = {a%b}"
+            elif choice == "8":
+                print("\n--- History ---")
+                for item in history: print(item)
+                continue
+            elif choice == "9":
+                save_history()
+                continue
+            elif choice == "10":
+                break
+            else:
+                print("Invalid choice.")
+                continue
+
+            print("Result:", result)
+            log(result)
+
+        except ValueError:
+            print("Invalid input.")
+
+if __name__ == "__main__":
+    main()
