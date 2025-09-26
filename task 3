@@ -1,0 +1,36 @@
+import random
+import string
+from datetime import datetime
+
+FILE = "passwords.txt"
+
+def generate_password(length, use_digits=True, use_symbols=True, avoid_similar=False):
+    characters = string.ascii_letters
+    if use_digits: characters += string.digits
+    if use_symbols: characters += string.punctuation
+    if avoid_similar:
+        for ch in "0O1l":
+            characters = characters.replace(ch, "")
+    return ''.join(random.choice(characters) for _ in range(length))
+
+def save_password(password):
+    with open(FILE, "a") as f:
+        f.write(f"{datetime.now()}: {password}\n")
+
+def main():
+    try:
+        length = int(input("Enter password length: "))
+    except ValueError:
+        print("Invalid length.")
+        return
+
+    digits = input("Include digits? (y/n): ").lower() == "y"
+    symbols = input("Include symbols? (y/n): ").lower() == "y"
+    avoid_similar = input("Avoid similar characters (0/O/1/l)? (y/n): ").lower() == "y"
+
+    password = generate_password(length, digits, symbols, avoid_similar)
+    print("Generated Password:", password)
+    save_password(password)
+
+if __name__ == "__main__":
+    main()
