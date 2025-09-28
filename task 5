@@ -1,0 +1,77 @@
+import json
+import csv
+
+FILE = "contacts.json"
+
+try:
+    with open(FILE, "r") as f:
+        contacts = json.load(f)
+except FileNotFoundError:
+    contacts = {}
+
+def save_contacts():
+    with open(FILE, "w") as f:
+        json.dump(contacts, f, indent=2)
+
+def add_contact():
+    name = input("Enter name: ")
+    phone = input("Enter phone: ")
+    email = input("Enter email: ")
+    address = input("Enter address: ")
+    contacts[name.lower()] = {"name": name, "phone": phone, "email": email, "address": address}
+    save_contacts()
+    print("Contact added.")
+
+def view_contacts():
+    if not contacts:
+        print("No contacts yet.")
+    else:
+        for c in contacts.values():
+            print(f"{c['name']} | {c['phone']} | {c['email']} | {c['address']}")
+
+def search_contact():
+    query = input("Search by name: ").lower()
+    results = [c for c in contacts.values() if query in c['name'].lower()]
+    if results:
+        for c in results: print(f"{c['name']} | {c['phone']} | {c['email']} | {c['address']}")
+    else:
+        print("No matches.")
+
+def delete_contact():
+    name = input("Enter name to delete: ").lower()
+    if name in contacts:
+        del contacts[name]
+        save_contacts()
+        print("Deleted.")
+    else:
+        print("Not found.")
+
+def export_csv():
+    with open("contacts.csv", "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["name", "phone", "email", "address"])
+        writer.writeheader()
+        for c in contacts.values():
+            writer.writerow(c)
+    print("Contacts exported to contacts.csv")
+
+def main():
+    while True:
+        print("\n--- Contact Book ---")
+        print("1. Add contact")
+        print("2. View contacts")
+        print("3. Search contact")
+        print("4. Delete contact")
+        print("5. Export to CSV")
+        print("6. Exit")
+
+        choice = input("Choose option: ")
+        if choice == "1": add_contact()
+        elif choice == "2": view_contacts()
+        elif choice == "3": search_contact()
+        elif choice == "4": delete_contact()
+        elif choice == "5": export_csv()
+        elif choice == "6": break
+        else: print("Invalid choice.")
+
+if __name__ == "__main__":
+    main()
